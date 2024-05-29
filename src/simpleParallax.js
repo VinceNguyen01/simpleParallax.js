@@ -25,7 +25,8 @@ export default class SimpleParallax {
             transition: 'cubic-bezier(0,0,0,1)',
             customContainer: '',
             customWrapper: '',
-            maxTransition: 0
+            maxTransition: 0,
+            speed: 1
         };
 
         this.settings = Object.assign(this.defaults, options);

@@ -269,7 +269,9 @@ class ParallaxInstance {
         if (this.settings.orientation.includes('up') || this.settings.orientation.includes('down')) {
             // if orientation option is up or down
             // use vertical axe - Y axe
-            translateValueY = `${this.settings.orientation.includes('up') ? this.translateValue * -1 : this.translateValue}px`;
+            translateValueY = `${
+                this.settings.orientation.includes('up') ? this.translateValue * (this.settings.speed * -1) : this.translateValue
+            }px`;
         }
 
         // set style to apply to the element
