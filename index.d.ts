@@ -11,7 +11,7 @@ declare module 'simple-parallax-js' {
     }
 
     export default class SimpleParallax {
-        constructor(images: Element | Element[] | HTMLCollectionOf<Element>, settings?: IParallaxSettings, clonedWindow: Window & typeof globalThis);
+        constructor(images: Element | Element[] | HTMLCollectionOf<Element>, settings?: IParallaxSettings, {} : {clonedWindow: Window & typeof globalThis, clonedDocument: Document});
         public refresh: () => void;
         public destroy: () => void;
     }

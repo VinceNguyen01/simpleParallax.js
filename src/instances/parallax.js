@@ -3,7 +3,7 @@ import isImageLoaded from '../helpers/isImageLoaded';
 import { viewport } from '../helpers/viewport';
 
 class ParallaxInstance {
-    constructor(element, options) {
+    constructor(element, options, clonedDocument) {
         // set the element & settings
         this.element = element;
         this.elementContainer = element;
@@ -11,6 +11,7 @@ class ParallaxInstance {
         this.isVisible = true;
         this.isInit = false;
         this.oldTranslateValue = -1;
+        this.clonedDocument = clonedDocument;
 
         this.init = this.init.bind(this);
 
@@ -73,11 +74,11 @@ class ParallaxInstance {
                 // apply the transition style on the image
                 this.setTransitionCSS();
 
-                //add isInit class
+                // add isInit class
                 this.elementContainer.classList.add('simple-parallax-initialized');
             }, 10);
         } else {
-            //add isInit class
+            // add isInit class
             this.elementContainer.classList.add('simple-parallax-initialized');
         }
 
@@ -94,7 +95,7 @@ class ParallaxInstance {
         // create a .simpleParallax wrapper container
         // if there is a custom wrapper
         // override the wrapper with it
-        let wrapper = this.customWrapper || document.createElement('div');
+        const wrapper = this.customWrapper || document.createElement('div');
 
         wrapper.classList.add('simpleParallax');
         wrapper.style.overflow = 'hidden';
@@ -126,7 +127,7 @@ class ParallaxInstance {
         if (this.settings.overflow === false) {
             // if overflow option is set to false
             // add scale style so the image can be translated without getting out of its container
-            this.element.style[cssTransform] = `scale(${this.settings.scale})`;
+            this.element.style[cssTransform(this.clonedDocument)] = `scale(${this.settings.scale})`;
         }
 
         // add will-change CSS property to improve perfomance
@@ -143,7 +144,7 @@ class ParallaxInstance {
     unSetStyle() {
         // remove will change inline style
         this.element.style.willChange = '';
-        this.element.style[cssTransform] = '';
+        this.element.style[cssTransform(this.clonedDocument)] = '';
         this.element.style.transition = '';
     }
 
@@ -281,7 +282,7 @@ class ParallaxInstance {
         }
 
         // add style on the element using the adequate CSS transform
-        this.element.style[cssTransform] = inlineCss;
+        this.element.style[cssTransform(this.clonedDocument)] = inlineCss;
     }
 }
 

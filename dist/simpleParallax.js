@@ -1,6 +1,6 @@
 /*!
  * simpleParallax - simpleParallax is a simple JavaScript library that gives your website parallax animations on any images or videos, 
- * @date: 29-05-2024 13:12:6, 
+ * @date: 29-05-2024 13:52:45, 
  * @version: 5.6.2,
  * @link: https://simpleparallax.com/
  */
@@ -130,7 +130,7 @@ class Viewport {
   }
   setViewportTop(container, clonedWindow) {
     // if this is a custom container, user the scrollTop
-    this.positions.top = container ? container.scrollTop : clonedWindow.pageYOffset;
+    this.positions.top = container ? container.scrollTop : clonedWindow.scrollY;
     return this.positions;
   }
   setViewportBottom() {
@@ -139,7 +139,7 @@ class Viewport {
   }
   setViewportAll(container, clonedWindow) {
     // if this is a custom container, user the scrollTop
-    this.positions.top = container ? container.scrollTop : clonedWindow.pageYOffset;
+    this.positions.top = container ? container.scrollTop : clonedWindow.scrollY;
     // if this is a custom container, get the height from the custom container itself
     this.positions.height = container ? container.clientHeight : document.documentElement.clientHeight;
     this.positions.bottom = this.positions.top + this.positions.height;
@@ -169,7 +169,7 @@ const cssTransform = () => {
   }
   return transform;
 };
-/* harmony default export */ var helpers_cssTransform = (cssTransform());
+/* harmony default export */ var helpers_cssTransform = (cssTransform);
 // CONCATENATED MODULE: ./src/helpers/isImageLoaded.js
 // check if media is fully loaded
 const isImageLoaded = media => {
@@ -200,7 +200,7 @@ const isImageLoaded = media => {
 
 
 class parallax_ParallaxInstance {
-  constructor(element, options) {
+  constructor(element, options, clonedDocument) {
     // set the element & settings
     this.element = element;
     this.elementContainer = element;
@@ -208,6 +208,7 @@ class parallax_ParallaxInstance {
     this.isVisible = true;
     this.isInit = false;
     this.oldTranslateValue = -1;
+    this.clonedDocument = clonedDocument;
     this.init = this.init.bind(this);
     this.customWrapper = this.settings.customWrapper && this.element.closest(this.settings.customWrapper) ? this.element.closest(this.settings.customWrapper) : null;
 
@@ -262,11 +263,11 @@ class parallax_ParallaxInstance {
         // apply the transition style on the image
         this.setTransitionCSS();
 
-        //add isInit class
+        // add isInit class
         this.elementContainer.classList.add('simple-parallax-initialized');
       }, 10);
     } else {
-      //add isInit class
+      // add isInit class
       this.elementContainer.classList.add('simple-parallax-initialized');
     }
 
@@ -283,7 +284,7 @@ class parallax_ParallaxInstance {
     // create a .simpleParallax wrapper container
     // if there is a custom wrapper
     // override the wrapper with it
-    let wrapper = this.customWrapper || document.createElement('div');
+    const wrapper = this.customWrapper || document.createElement('div');
     wrapper.classList.add('simpleParallax');
     wrapper.style.overflow = 'hidden';
 
@@ -313,7 +314,7 @@ class parallax_ParallaxInstance {
     if (this.settings.overflow === false) {
       // if overflow option is set to false
       // add scale style so the image can be translated without getting out of its container
-      this.element.style[helpers_cssTransform] = `scale(${this.settings.scale})`;
+      this.element.style[helpers_cssTransform(this.clonedDocument)] = `scale(${this.settings.scale})`;
     }
 
     // add will-change CSS property to improve perfomance
@@ -330,7 +331,7 @@ class parallax_ParallaxInstance {
   unSetStyle() {
     // remove will change inline style
     this.element.style.willChange = '';
-    this.element.style[helpers_cssTransform] = '';
+    this.element.style[helpers_cssTransform(this.clonedDocument)] = '';
     this.element.style.transition = '';
   }
 
@@ -465,7 +466,7 @@ class parallax_ParallaxInstance {
     }
 
     // add style on the element using the adequate CSS transform
-    this.element.style[helpers_cssTransform] = inlineCss;
+    this.element.style[helpers_cssTransform(this.clonedDocument)] = inlineCss;
   }
 }
 /* harmony default export */ var parallax = (parallax_ParallaxInstance);
@@ -479,7 +480,10 @@ let instances = [];
 let frameID;
 let resizeID;
 class simpleParallax_SimpleParallax {
-  constructor(elements, options, clonedWindow) {
+  constructor(elements, options, {
+    clonedWindow,
+    clonedDocument
+  }) {
     if (!elements) return;
 
     // check if the browser support simpleParallax
@@ -504,11 +508,12 @@ class simpleParallax_SimpleParallax {
     this.refresh = this.refresh.bind(this);
     this.proceedRequestAnimationFrame = this.proceedRequestAnimationFrame.bind(this);
     this.clonedWindow = clonedWindow;
+    this.clonedDocument = clonedDocument;
     this.init();
   }
   init() {
-    viewport.setViewportAll(this.customContainer);
-    instances = [...this.elements.map(element => new parallax(element, this.settings)), ...instances];
+    viewport.setViewportAll(this.customContainer, this.clonedWindow);
+    instances = [...this.elements.map(element => new parallax(element, this.settings, this.clonedDocument)), ...instances];
 
     // update the instance length
     // instancesLength = instances.length;
@@ -531,7 +536,7 @@ class simpleParallax_SimpleParallax {
   // animation frame
   proceedRequestAnimationFrame() {
     // get the offset top of the viewport
-    viewport.setViewportTop(this.customContainer);
+    viewport.setViewportTop(this.customContainer, this.clonedWindow);
     if (this.lastPosition === viewport.positions.top) {
       // if last position if the same than the curent one
       // callback the animationFrame and exit the current loop
@@ -580,7 +585,7 @@ class simpleParallax_SimpleParallax {
   }
   refresh() {
     // re-get all the viewport positions
-    viewport.setViewportAll(this.customContainer);
+    viewport.setViewportAll(this.customContainer, this.clonedWindow);
     instances.forEach(instance => {
       // re-get the current element offset
       instance.getElementOffset();

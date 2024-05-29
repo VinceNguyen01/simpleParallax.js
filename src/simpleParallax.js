@@ -10,7 +10,7 @@ let frameID;
 let resizeID;
 
 export default class SimpleParallax {
-    constructor(elements, options, clonedWindow) {
+    constructor(elements, options, { clonedWindow, clonedDocument }) {
         if (!elements) return;
 
         // check if the browser support simpleParallax
@@ -40,14 +40,15 @@ export default class SimpleParallax {
         this.refresh = this.refresh.bind(this);
         this.proceedRequestAnimationFrame = this.proceedRequestAnimationFrame.bind(this);
         this.clonedWindow = clonedWindow;
+        this.clonedDocument = clonedDocument;
 
         this.init();
     }
 
     init() {
-        viewport.setViewportAll(this.customContainer);
+        viewport.setViewportAll(this.customContainer, this.clonedWindow);
 
-        instances = [...this.elements.map((element) => new ParallaxInstance(element, this.settings)), ...instances];
+        instances = [...this.elements.map((element) => new ParallaxInstance(element, this.settings, this.clonedDocument)), ...instances];
 
         // update the instance length
         // instancesLength = instances.length;
@@ -72,7 +73,7 @@ export default class SimpleParallax {
     // animation frame
     proceedRequestAnimationFrame() {
         // get the offset top of the viewport
-        viewport.setViewportTop(this.customContainer);
+        viewport.setViewportTop(this.customContainer, this.clonedWindow);
 
         if (this.lastPosition === viewport.positions.top) {
             // if last position if the same than the curent one
@@ -124,7 +125,7 @@ export default class SimpleParallax {
 
     refresh() {
         // re-get all the viewport positions
-        viewport.setViewportAll(this.customContainer);
+        viewport.setViewportAll(this.customContainer, this.clonedWindow);
 
         instances.forEach((instance) => {
             // re-get the current element offset

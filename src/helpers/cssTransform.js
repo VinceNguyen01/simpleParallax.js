@@ -10,4 +10,4 @@ const cssTransform = () => {
     return transform;
 };
 
-export default cssTransform();
+export default cssTransform;
