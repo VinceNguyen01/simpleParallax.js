@@ -10,7 +10,7 @@ let frameID;
 let resizeID;
 
 export default class SimpleParallax {
-    constructor(elements, options) {
+    constructor(elements, options, clonedWindow) {
         if (!elements) return;
 
         // check if the browser support simpleParallax
@@ -39,6 +39,7 @@ export default class SimpleParallax {
         this.resizeIsDone = this.resizeIsDone.bind(this);
         this.refresh = this.refresh.bind(this);
         this.proceedRequestAnimationFrame = this.proceedRequestAnimationFrame.bind(this);
+        this.clonedWindow = clonedWindow;
 
         this.init();
     }
@@ -56,7 +57,7 @@ export default class SimpleParallax {
             // init the frame
             this.proceedRequestAnimationFrame();
 
-            window.addEventListener('resize', this.resizeIsDone);
+            this.clonedWindow.addEventListener('resize', this.resizeIsDone);
 
             isInit = true;
         }
@@ -76,7 +77,7 @@ export default class SimpleParallax {
         if (this.lastPosition === viewport.positions.top) {
             // if last position if the same than the curent one
             // callback the animationFrame and exit the current loop
-            frameID = window.requestAnimationFrame(this.proceedRequestAnimationFrame);
+            frameID = this.clonedWindow.requestAnimationFrame(this.proceedRequestAnimationFrame);
 
             return;
         }
@@ -90,7 +91,7 @@ export default class SimpleParallax {
         });
 
         // callback the animationFrame
-        frameID = window.requestAnimationFrame(this.proceedRequestAnimationFrame);
+        frameID = this.clonedWindow.requestAnimationFrame(this.proceedRequestAnimationFrame);
 
         // store the last position
         this.lastPosition = viewport.positions.top;
@@ -164,10 +165,10 @@ export default class SimpleParallax {
         // if no instances left, remove the raf and resize event = simpleParallax fully destroyed
         if (!instances.length) {
             // cancel the animation frame
-            window.cancelAnimationFrame(frameID);
+            this.clonedWindow.cancelAnimationFrame(frameID);
 
             // detach the resize event
-            window.removeEventListener('resize', this.refresh);
+            this.clonedWindow.removeEventListener('resize', this.refresh);
 
             // Reset isInit
             isInit = false;
