@@ -49,6 +49,12 @@ module.exports = {
             })
         ]
     },
+    target: 'node', 
+    plugins: [
+        new webpack.DefinePlugin({
+            'typeof window': JSON.stringify('undefined')
+        })
+    ],
     module: {
         rules: [
             {
