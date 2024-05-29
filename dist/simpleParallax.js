@@ -1,6 +1,6 @@
 /*!
  * simpleParallax - simpleParallax is a simple JavaScript library that gives your website parallax animations on any images or videos, 
- * @date: 29-05-2024 11:58:47, 
+ * @date: 29-05-2024 13:12:6, 
  * @version: 5.6.2,
  * @link: https://simpleparallax.com/
  */
@@ -117,7 +117,7 @@ __webpack_require__.d(__webpack_exports__, "default", function() { return /* bin
 // need Intersection Observer support
 // https://github.com/w3c/IntersectionObserver/tree/master/polyfill
 
-const isSupportedBrowser = () => Element.prototype.closest && 'IntersectionObserver' in window;
+const isSupportedBrowser = clonedWindow => Element.prototype.closest && 'IntersectionObserver' in clonedWindow;
 /* harmony default export */ var helpers_isSupportedBrowser = (isSupportedBrowser);
 // CONCATENATED MODULE: ./src/helpers/viewport.js
 class Viewport {
@@ -128,18 +128,18 @@ class Viewport {
       height: 0
     };
   }
-  setViewportTop(container) {
+  setViewportTop(container, clonedWindow) {
     // if this is a custom container, user the scrollTop
-    this.positions.top = container ? container.scrollTop : window.pageYOffset;
+    this.positions.top = container ? container.scrollTop : clonedWindow.pageYOffset;
     return this.positions;
   }
   setViewportBottom() {
     this.positions.bottom = this.positions.top + this.positions.height;
     return this.positions;
   }
-  setViewportAll(container) {
+  setViewportAll(container, clonedWindow) {
     // if this is a custom container, user the scrollTop
-    this.positions.top = container ? container.scrollTop : window.pageYOffset;
+    this.positions.top = container ? container.scrollTop : clonedWindow.pageYOffset;
     // if this is a custom container, get the height from the custom container itself
     this.positions.height = container ? container.clientHeight : document.documentElement.clientHeight;
     this.positions.bottom = this.positions.top + this.positions.height;
@@ -483,7 +483,7 @@ class simpleParallax_SimpleParallax {
     if (!elements) return;
 
     // check if the browser support simpleParallax
-    if (!helpers_isSupportedBrowser()) return;
+    if (!helpers_isSupportedBrowser(clonedWindow)) return;
     this.elements = helpers_convertToArray(elements);
     this.defaults = {
       delay: 0,

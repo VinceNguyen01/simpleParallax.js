@@ -3,6 +3,6 @@
 // need Intersection Observer support
 // https://github.com/w3c/IntersectionObserver/tree/master/polyfill
 
-const isSupportedBrowser = () => Element.prototype.closest && 'IntersectionObserver' in window;
+const isSupportedBrowser = (clonedWindow) => Element.prototype.closest && 'IntersectionObserver' in clonedWindow;
 
 export default isSupportedBrowser;

@@ -14,7 +14,7 @@ export default class SimpleParallax {
         if (!elements) return;
 
         // check if the browser support simpleParallax
-        if (!isSupportedBrowser()) return;
+        if (!isSupportedBrowser(clonedWindow)) return;
 
         this.elements = convertToArray(elements);
         this.defaults = {
