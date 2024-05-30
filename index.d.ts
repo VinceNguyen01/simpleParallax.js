@@ -8,10 +8,11 @@ declare module 'simple-parallax-js' {
         customContainer?: string | HTMLElement;
         customWrapper?: string;
         maxTransition?: number;
+        speed?: number;
     }
 
     export default class SimpleParallax {
-        constructor(images: Element | Element[] | HTMLCollectionOf<Element>, settings?: IParallaxSettings, {} : {clonedWindow: Window & typeof globalThis, clonedDocument: Document});
+        constructor(images: Element | Element[] | HTMLCollectionOf<Element>, settings?: IParallaxSettings, {} ?: {clonedWindow: Window & typeof globalThis, clonedDocument: Document});
         public refresh: () => void;
         public destroy: () => void;
     }
