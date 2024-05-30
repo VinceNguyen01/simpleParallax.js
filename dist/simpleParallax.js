@@ -1,6 +1,6 @@
 /*!
  * simpleParallax - simpleParallax is a simple JavaScript library that gives your website parallax animations on any images or videos, 
- * @date: 29-05-2024 17:26:52, 
+ * @date: 30-05-2024 10:40:5, 
  * @version: 5.6.2,
  * @link: https://simpleparallax.com/
  */
@@ -426,7 +426,7 @@ class parallax_ParallaxInstance {
 
     // transform this % into the max range of the element
     // rounding translateValue to a non float int - as minimum pixel for browser to render is 1 (no 0.5)
-    this.translateValue = (percentage / 100 * this.rangeMax - this.rangeMax / 2).toFixed(0);
+    this.translateValue = (percentage / 100 * this.rangeMax - this.rangeMax / 2).toFixed(0) * this.settings.speed;
 
     // sometime the same translate value is returned
     // if so we don't do anything
@@ -453,7 +453,7 @@ class parallax_ParallaxInstance {
     if (this.settings.orientation.includes('up') || this.settings.orientation.includes('down')) {
       // if orientation option is up or down
       // use vertical axe - Y axe
-      translateValueY = `${this.settings.orientation.includes('up') ? this.translateValue * (this.settings.speed * -1) : this.translateValue}px`;
+      translateValueY = `${this.settings.orientation.includes('up') ? this.translateValue * -1 : this.translateValue}px`;
     }
 
     // set style to apply to the element
